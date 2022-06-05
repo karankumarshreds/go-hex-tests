@@ -11,11 +11,12 @@ import (
 
 type MuxServer struct {
 	port     string
+	router   *mux.Router
 	handlers http.Handler
 }
 
 func NewMuxServer(ctx context.Context, db *sql.DB, app_port string) MuxServer {
-	router := mux.NewRouter()
+	mxRouter := mux.NewRouter()
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -23,16 +24,18 @@ func NewMuxServer(ctx context.Context, db *sql.DB, app_port string) MuxServer {
 	})
 
 	// Cors wrapper around the routes handler
-	cors_wrapped_handlers := c.Handler(router)
+	cors_wrapped_handlers := c.Handler(mxRouter)
 
 	return MuxServer{
 		port:     app_port,
+		router:   mxRouter,
 		handlers: cors_wrapped_handlers,
 	}
 
 }
 
 func (mx *MuxServer) Run() {
+	mx.initializeRoutes()
 	log.Printf("Server starting on %s\n", mx.port)
 	log.Fatal(http.ListenAndServe(":"+mx.port, mx.handlers))
 }
