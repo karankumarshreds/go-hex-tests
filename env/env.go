@@ -33,7 +33,7 @@ func GetEnv(fileName string) EnvApp {
 		port = DEFAULT_PORT
 	}
 	return EnvApp{
-		SERVER_PORT: PORT,
+		SERVER_PORT: port,
 		DB_ENGINE:   os.Getenv("DB_ENGINE"),
 		DB_HOST:     os.Getenv("DB_HOST"),
 		DB_PORT:     os.Getenv("DB_PORT"),
